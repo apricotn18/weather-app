@@ -1,0 +1,27 @@
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, a, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, dialog, figure, footer, header, hgroup, menu, nav, section, time, mark, audio, video {
+	font-family: 'Montserrat', 'Noto Sans JP', sans-serif;
+}
+* {
+	font-size: 14px;
+	letter-spacing: 1px;
+	font-weight: normal;
+	color: #000;
+}
+body {
+	position: relative;
+	background: linear-gradient(45deg, #dedede, #f5f5f5);
+	text-align: center;
+	min-height: 100vh;
+	padding: 5px 20px;
+}
+.wrap {
+	position: relative;
+	background: #fff;
+	border-radius: 10px;
+	margin: 20px auto 0;
+	width: 100%;
+	max-width: 400px;
+	min-height: 100vh;
+	box-shadow: 5px 5px 10px 0 rgba(0,0,0,.1);
+	overflow: hidden;
+}
