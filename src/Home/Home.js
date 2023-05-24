@@ -1,102 +1,136 @@
 import {useState, useEffect} from 'react';
+import Loading from '../Loading/Loading';
 import './Home.css';
-import ajax from './ajax';
+import * as api from './api';
 import areaList from './area.json';
-import img_loading from './img_loading.gif';
 
 function Home() {
+	// 現在の天気
+	const [current, setCurrent] = useState({});
+	// 今後の天気リスト
 	const [list, setList] = useState([]);
+	// 都市名
 	const [city, setCity] = useState('');
-	const [isLoading, setIsLoading] = useState(true);
-	const [isOpened, setIsOpened] = useState(false);
+	// ローディングの表示制御
+	const [isLoading, setLoading] = useState(true);
+	// 都道府県リストの表示制御
+	const [isOverflow, setOverflow] = useState(false);
 
-	const callback = (res) => {
-		setList(res.list);
-		setCity(res.city.name);
-		setIsLoading(false);
+	const setItem = (item) => {
+		const result = [];
+		item.list.map((item, index) => {
+			if (index === 0) {
+				setCurrent(api.convert(item));
+			}
+			result.push(api.convert(item));
+		});
+		setList(result);
+	};
+
+	const changeArea = (e) => {
+		setLoading(true);
+		const coord = e.target.dataset.coord.split(',');
+		const city = e.target.textContent;
+
+		api.fetch({
+			latitude: coord[0],
+			longitude: coord[1]
+		}, (res) => {
+			setItem(res);
+			setCity(city);
+			setLoading(false);
+		});
+	};
+
+	const changeActiveOverflow = () => {
+		setOverflow(!isOverflow);
+		document.body.style.overflow = isOverflow ? '' : 'hidden';
 	};
 
 	useEffect(() => {
 		// 現在地の位置情報の許可
 		navigator.geolocation.getCurrentPosition(
 			(pos) => { // 成功
-				ajax({
+				api.fetch({
 					latitude: pos.coords.latitude,
 					longitude: pos.coords.longitude
-				}, (res) => callback(res))
+				}, (res) => setItem(res))
 			},
-			() => { // 失敗（東京都千代田区丸の内で取得）
-				ajax({
+			() => { // 失敗（東京都で取得）
+				api.fetch({
+					latitude: 35.68944,
+					longitude: 139.69167,
+				}, (res) => {
+					setItem(res);
+					setCity(res.city.name);
+					setLoading(false);
+				});
+			},
+			() => {
+				api.fetch({
 					latitude: 35.68036537,
 					longitude: 139.77166874,
-				}, (res) => callback(res))
-			}
+				}, (res) => {
+					setItem(res);
+					setCity(res.city.name);
+					setLoading(false);
+				});
+			},
 		);
 	}, []);
 
 	return (
 		<main>
 			<div className="place">
-				<p className="change"><span>都道府県別の天気予報に変更</span></p>
+				<button className="popup" onClick={changeActiveOverflow}><span>都道府県を変更する</span></button>
 				<h2 className="city">{city}</h2>
 			</div>
-			{/* <div className="info">
-				<p>
-					現在の天気：{list[0].description}
-					<span className="temp">{list[0].temperature}</span>°C
-				</p>
-				<div className="icon"><img src={`${process.env.PUBLIC_URL}/weather/${list.weather[0].icon}.svg`} alt="天気" /></div>
-			</div> */}
+			<div className="info">
+				<div>
+					現在の天気：{current.description || ''}
+					<span className="temp">{current.temperature || ''}</span>°C
+				</div>
+				<div className="icon"><img src={current.iconPath || ''} alt="天気" /></div>
+			</div>
 			<table>
 				<tbody>
 					{list.map((item, i) => {
-						if (i !== 0) {
-							const dateTime = new Date(item.dt * 1000);
-							const obj = {
-								month: dateTime.getMonth() + 1,
-								date: dateTime.getDate(),
-								hours: dateTime.getHours(),
-								min: String(dateTime.getMinutes()).padStart(2, '0'),
-								temperature: Math.round(item.main.temp),
-								description: item.weather[0].description,
-								iconPath: `${process.env.PUBLIC_URL}/weather/${item.weather[0].icon}.svg`,
-							}
-							return (
-								<tr key={i}>
-									<td className="info">
-										{obj.month}/{obj.date}<br />
-										{obj.hours}:{obj.min}
-									</td>
-									<td className="icon"><img src={obj.iconPath} alt="天気" /></td>
-									<td><span className="description">{obj.description}</span></td>
-									<td><span className="temp">{obj.temperature}°C</span></td>
-								</tr>
-							)
-						}
+						return (
+							<tr key={i}>
+								<td className="info">
+									{item.month}/{item.date}<br />
+									{item.hours}:{item.min}
+								</td>
+								<td className="icon"><img src={item.iconPath} alt="天気" /></td>
+								<td><span className="description">{item.description}</span></td>
+								<td><span className="temp">{item.temperature}°C</span></td>
+							</tr>
+						)
 					})}
 				</tbody>
 			</table>
 
-			<div className={isOpened ? 'overflow' : 'overflow is-hidden'}>
-				<div className="overflow_wrap"></div>
-				<div className="overflow_inner">
-					<h3>
-						都道府県を選択してください
-						<button type="button" className="overflow_close"></button>
-					</h3>
-					<ul className="area">
-						{areaList.map((item, i) => {
-							return (
-								<li key={i} data-coord={item.coord}>{item.area}</li>
-							)
-						})}
-					</ul>
+			<div className={isOverflow ? 'overflow is-active' : 'overflow'}>
+				<div className="overflow_wrap" onClick={changeActiveOverflow}>
+					<div className="overflow_inner">
+						<div className="overflow_title">
+							都道府県を選択してください
+							<button type="button" className="overflow_close" onClick={changeActiveOverflow}></button>
+						</div>
+						<ul className="area">
+							{areaList.map((item, i) => {
+								return (
+									<li key={i}>
+										<buttun type="button" className="area_button" data-coord={item.coord} onClick={changeArea}>{item.area}</buttun>
+									</li>
+								)
+							})}
+						</ul>
+					</div>
 				</div>
 			</div>
 
-			<div className={isLoading ? 'loading' : 'loading is-hidden'}>
-				<img src={img_loading} alt="読み込み中" />
-			</div>
+			<Loading isLoading={isLoading}></Loading>
 		</main>
 	);
 }
