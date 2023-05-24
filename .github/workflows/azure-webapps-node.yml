@@ -25,10 +25,4 @@ jobs:
     - name: build
       run: |
         npm install
-        npm run build --if-present
-
-    - name: Upload artifact for deployment job
-      uses: actions/upload-artifact@v3
-      with:
-        name: node-app
-        path: .
+        npm run build
