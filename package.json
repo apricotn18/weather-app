@@ -33,5 +33,5 @@
   "devDependencies": {
     "jest-watch-typeahead": "^0.6.5"
   },
-  "homepage": "https://apricotn18.github.io/weather-app/"
+  "homepage": "https://apricotn18.github.io/weather-app/build/"
 }
