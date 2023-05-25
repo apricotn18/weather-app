@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
 import './assets/reset.css';
 import './assets/common.css';
 import Home from './Home/Home';
