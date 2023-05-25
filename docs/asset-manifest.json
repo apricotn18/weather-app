@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/weather-app/static/css/main.bb61025c.css",
+    "main.js": "/weather-app/static/js/main.183e1d76.js",
+    "static/media/img_nyan.png": "/weather-app/static/media/img_nyan.377860685780932d1c85.png",
+    "index.html": "/weather-app/index.html",
+    "static/media/img_thermometer.svg": "/weather-app/static/media/img_thermometer.75ffb6e4698a9c261929.svg",
+    "main.bb61025c.css.map": "/weather-app/static/css/main.bb61025c.css.map",
+    "main.183e1d76.js.map": "/weather-app/static/js/main.183e1d76.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.bb61025c.css",
+    "static/js/main.183e1d76.js"
+  ]
+}
