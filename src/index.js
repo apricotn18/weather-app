@@ -10,12 +10,10 @@ import Footer from './Footer/Footer';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 	<React.StrictMode>
-		<BrowserRouter basename={process.env.PUBLIC_URL}>
-			<div className="wrap">
-				<Header />
-				<Home />
-				<Footer />
-			</div>
-		</BrowserRouter>
+		<div className="wrap">
+			<Header />
+			<Home />
+			<Footer />
+		</div>
 	</React.StrictMode>
 );
