@@ -65,7 +65,7 @@ table img {
 .temp {
 	display: inline-block;
 	padding-left: 24px;
-	background: url(./img_thermometer.svg) 0 center no-repeat;
+	background: url("../../public/img/img_thermometer.svg") 0 center no-repeat;
 	background-size: 24px 24px;
 	min-height: 24px;
 }
@@ -111,7 +111,7 @@ table img {
 	position: absolute;
 	top: 0;
 	right: 0;
-	background-image: url(./icon_close.png);
+	background-image: url("../../public/img/icon_close.png");
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: 18px;
@@ -133,8 +133,9 @@ table img {
 	padding: 1px;
 	box-sizing: border-box;
 }
-.area_button {
+.area button {
 	display: block;
+	width: 100%;
 	padding: 15px 0;
 	background-color: #f8f8f8;
 	overflow: hidden;

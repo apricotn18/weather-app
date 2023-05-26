@@ -1,10 +1,9 @@
 import './Loading.css';
-import img_loading from './img_loading.gif';
 
 function Loading(props) {
 	return (
 		<div className={props.isLoading ? 'loading is-active' : 'loading'}>
-			<img src={img_loading} alt="読み込み中" />
+			<img src={`${process.env.PUBLIC_URL}/img/img_loading.gif`} alt="読み込み中" />
 		</div>
 	);
 }
