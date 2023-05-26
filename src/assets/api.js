@@ -23,7 +23,7 @@ const convert = (obj) => {
 		min: String(dateTime.getMinutes()).padStart(2, '0'),
 		temperature: Math.round(obj.main.temp),
 		description: obj.weather[0].description,
-		iconPath: `${process.env.PUBLIC_URL}/weather/${obj.weather[0].icon}.svg`,
+		iconPath: `${process.env.PUBLIC_URL}/img/weather/${obj.weather[0].icon}.svg`,
 	}
 };
 

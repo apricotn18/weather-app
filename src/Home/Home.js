@@ -1,8 +1,8 @@
 import {useState, useEffect} from 'react';
 import Loading from '../Loading/Loading';
 import './Home.css';
-import * as api from './api';
-import areaList from './area.json';
+import * as api from '../assets/api';
+import areaList from '../assets/area.json';
 
 function Home() {
 	// 現在の天気
@@ -121,7 +121,7 @@ function Home() {
 							{areaList.map((item, i) => {
 								return (
 									<li key={i}>
-										<buttun type="button" className="area_button" data-coord={item.coord} onClick={changeArea}>{item.area}</buttun>
+										<button type="button" data-coord={item.coord} onClick={changeArea}>{item.area}</button>
 									</li>
 								)
 							})}
