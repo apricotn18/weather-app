@@ -37,18 +37,10 @@ const fetch = (
 	coords: Coords,
 	callback: (response: WeatherAPI) => void
 ): void => {
-	let url = 'https://api.openweathermap.org/data/2.5/forecast?';
-	const params = [];
-	params.push(`appid=${process.env.REACT_APP_API_KEY}`);
-	params.push(`lat=${coords.latitude}`);
-	params.push(`lon=${coords.longitude}`);
-	params.push('cnt=10');
-	params.push('units=metric');
-	params.push('lang=ja');
-	url += params.join('&');
+	const url = `https://api.openweathermap.org/data/2.5/forecast?appid=${process.env.REACT_APP_API_KEY}&lat=${coords.latitude}&lon=${coords.longitude}&cnt=10&units=metric&lang=ja`;
 
 	const xhr = new XMLHttpRequest();
-	xhr.open('POST', url);
+	xhr.open('GET', url);
 	xhr.send();
 	xhr.onreadystatechange = function () {
 		if (xhr.readyState === 4 && xhr.status === 200) {
