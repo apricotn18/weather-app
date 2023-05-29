@@ -1,8 +1,54 @@
-const fetch = (position, callback) => {
-	const url = `https://api.openweathermap.org/data/2.5/forecast?appid=dd64b46ea595c4104e0881953cb4e287&lat=${position.latitude}&lon=${position.longitude}&cnt=10&units=metric&lang=ja`;
-	const xhr = new XMLHttpRequest();
+type Coords = {
+	latitude: string;
+	longitude: string;
+}
 
-	xhr.open('GET', url);
+type ConvertedItem = undefined | {
+	month: number;
+	date: number;
+	hours: number;
+	min: string;
+	temperature: number;
+	description: string;
+	iconPath: string;
+};
+
+type Weather = {
+	description: string;
+	icon: string;
+}
+
+type WeatherItem = {
+	dt: number;
+	main: {
+		temp: number;
+	}
+	weather: Weather[];
+}
+
+type WeatherAPI = {
+	city: {
+		name: string,
+	};
+	list: WeatherItem[];
+}
+
+const fetch = (
+	coords: Coords,
+	callback: (response: WeatherAPI) => void
+): void => {
+	let url = 'https://api.openweathermap.org/data/2.5/forecast?';
+	const params = [];
+	params.push(`appid=${process.env.REACT_APP_API_KEY}`);
+	params.push(`lat=${coords.latitude}`);
+	params.push(`lon=${coords.longitude}`);
+	params.push('cnt=10');
+	params.push('units=metric');
+	params.push('lang=ja');
+	url += params.join('&');
+
+	const xhr = new XMLHttpRequest();
+	xhr.open('POST', url);
 	xhr.send();
 	xhr.onreadystatechange = function () {
 		if (xhr.readyState === 4 && xhr.status === 200) {
@@ -14,7 +60,7 @@ const fetch = (position, callback) => {
 	};
 };
 
-const convert = (obj) => {
+const convert = (obj: WeatherItem): ConvertedItem => {
 	const dateTime = new Date(obj.dt * 1000);
 	return {
 		month: dateTime.getMonth() + 1,
@@ -27,4 +73,4 @@ const convert = (obj) => {
 	}
 };
 
-export {fetch, convert};
+export {fetch, convert, Coords, ConvertedItem, WeatherAPI};
