@@ -37,5 +37,5 @@
     "ts-loader": "^9.4.3",
     "typescript": "^5.0.4"
   },
-  "homepage": "https://apricotn18.github.io/weather-app/"
+  "homepage": "./"
 }
