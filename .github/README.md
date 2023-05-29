@@ -1,2 +1,2 @@
-### 天気予報アプリ
+## 天気予報アプリ
 https://apricotn18.github.io/weather-app/
