@@ -17,7 +17,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "commit": "git add . && git commit -m 'build' && git push",
-    "deploy": "rm -rf docs && npm run build && mv build docs && npm run commit",
+    "git-build": "rm -rf docs && npm run build && mv build docs && npm run commit",
     "eject": "react-scripts eject"
   },
   "browserslist": {
