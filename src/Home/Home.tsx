@@ -9,16 +9,16 @@ type ConvertedItem = api.ConvertedItem;
 type WeatherAPI = api.WeatherAPI;
 
 function Home() {
-	const initCoords = {
-		latitude: '35.68944',
-		longitude: '139.69167',
-	};
-	const [coords, setCoords] = useState<Coords>(initCoords); // 座標
-	const [city, setCity] = useState<string>('東京都'); // 都市名
+	const [coords, setCoords] = useState<Coords>({
+		latitude: '',
+		longitude: '',
+	}); // 座標
+	const [city, setCity] = useState<string>(''); // 都市名
 	const [current, setCurrent] = useState<ConvertedItem>(); // 現在の天気
 	const [list, setList]= useState<ConvertedItem[]>([]); // 今後の天気リスト
 	const [isLoading, setLoading] = useState<boolean>(true); // ローディングの表示制御
 	const [isOverflow, setOverflow] = useState<boolean>(false); // 都道府県リストの表示制御
+	const [isInit, setInit] = useState<boolean>(true); // 初期表示の制御
 
 	const changeArea = (e: React.MouseEvent<HTMLElement, MouseEvent>): void => {
 		setLoading(true);
@@ -41,19 +41,27 @@ function Home() {
 	useEffect(() => {
 		// 現在地の位置情報の許可
 		navigator.geolocation.getCurrentPosition(
-			(pos) => { // 成功
+			(pos) => { // 許可
 				setCoords({
 					latitude: String(pos.coords.latitude),
 					longitude: String(pos.coords.longitude)
 				});
 			},
-			() => { // 失敗
-				setCoords(initCoords);
+			() => { // 拒否
+				alert('位置情報の取得を許可してください');
+				setCity('東京都');
+				setCoords({
+					latitude: '35.68944',
+					longitude: '139.69167',
+				});
 			}
 		);
+		setInit(false);
 	}, []);
 
 	useEffect(() => {
+		if (isInit) return;
+
 		api.fetch({
 			latitude: coords.latitude,
 			longitude: coords.longitude
