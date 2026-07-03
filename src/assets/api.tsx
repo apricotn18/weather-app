@@ -35,7 +35,8 @@ type WeatherAPI = {
 
 const fetch = (
 	coords: Coords,
-	callback: (response: WeatherAPI) => void
+	callback: (response: WeatherAPI) => void,
+	onError?: () => void
 ): void => {
 	const url = `https://api.openweathermap.org/data/2.5/forecast?appid=${process.env.REACT_APP_API_KEY}&lat=${coords.latitude}&lon=${coords.longitude}&cnt=10&units=metric&lang=ja`;
 
@@ -43,11 +44,13 @@ const fetch = (
 	xhr.open('GET', url);
 	xhr.send();
 	xhr.onreadystatechange = function () {
-		if (xhr.readyState === 4 && xhr.status === 200) {
+		if (xhr.readyState !== 4) return;
+
+		if (xhr.status === 200) {
 			callback(JSON.parse(xhr.response));
-		}
-		if (xhr.status !== 200) {
+		} else {
 			alert('データを取得できませんでした');
+			onError?.();
 		}
 	};
 };

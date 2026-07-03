@@ -9,16 +9,23 @@ type ConvertedItem = api.ConvertedItem;
 type WeatherAPI = api.WeatherAPI;
 
 function Home() {
+	// 座標
 	const [coords, setCoords] = useState<Coords>({
 		latitude: '',
 		longitude: '',
-	}); // 座標
-	const [city, setCity] = useState<string>(''); // 都市名
-	const [current, setCurrent] = useState<ConvertedItem>(); // 現在の天気
-	const [list, setList]= useState<ConvertedItem[]>([]); // 今後の天気リスト
-	const [isLoading, setLoading] = useState<boolean>(true); // ローディングの表示制御
-	const [isOverflow, setOverflow] = useState<boolean>(false); // 都道府県リストの表示制御
-	const [isInit, setInit] = useState<boolean>(true); // 初期表示の制御
+	});
+	// 都市名
+	const [city, setCity] = useState<string>('');
+	// 現在の天気
+	const [current, setCurrent] = useState<ConvertedItem>();
+	// 今後の天気リスト
+	const [list, setList]= useState<ConvertedItem[]>([]);
+	// ローディングの表示制御
+	const [isLoading, setLoading] = useState<boolean>(true);
+	// 都道府県リストの表示制御
+	const [isOverflow, setOverflow] = useState<boolean>(false);
+	// 初期表示の制御
+	const [isInit, setInit] = useState<boolean>(true);
 
 	const changeArea = (e: React.MouseEvent<HTMLElement, MouseEvent>): void => {
 		setLoading(true);
@@ -39,17 +46,14 @@ function Home() {
 	};
 
 	useEffect(() => {
-		// 現在地の位置情報の許可
 		navigator.geolocation.getCurrentPosition(
-			(pos) => { // 許可
+			(pos) => {
 				setCoords({
 					latitude: String(pos.coords.latitude),
 					longitude: String(pos.coords.longitude)
 				});
 			},
-			() => { // 拒否
-				alert('位置情報の取得を許可してください');
-				setCity('東京都');
+			() => {
 				setCoords({
 					latitude: '35.68944',
 					longitude: '139.69167',
@@ -73,7 +77,10 @@ function Home() {
 				}
 				result.push(api.convert(item));
 			});
+			setCity(res.city.name);
 			setList(result);
+			setLoading(false);
+		}, () => {
 			setLoading(false);
 		});
 	}, [coords]);
@@ -81,33 +88,31 @@ function Home() {
 	return (
 		<main>
 			<div className="place">
-				<button className="popup" onClick={changeActiveOverflow}><span>都道府県を変更する</span></button>
 				<h2 className="city">{city}</h2>
+				<button className="popup" onClick={changeActiveOverflow}><span>都道府県を変更する</span></button>
 			</div>
-			<div className="info">
-				<div>
-					現在の天気：{current ? current.description : ''}
-					<span className="temp">{current ? current.temperature : ''}</span>°C
+			<div className="now">
+				<div className="now_main">
+					<p className="now_description">{current ? current.description : ''}</p>
+					<p className="now_temp">{current ? current.temperature : ''}<span>°C</span></p>
 				</div>
-				<div className="icon"><img src={current ? current.iconPath : ''} alt="天気" /></div>
+				<div className="now_icon"><img src={current ? current.iconPath : ''} alt="天気" /></div>
 			</div>
-			<table>
-				<tbody>
-					{list.map((item, i) => {
-						return(
-							<tr key={i}>
-								<td className="info">
-									{item ? item.month : ''}/{item ? item.date : ''}<br />
-									{item ? item.hours : ''}:{item ? item.min : ''}
-								</td>
-								<td className="icon"><img src={item ? item.iconPath : ''} alt="天気" /></td>
-								<td><span className="description">{item ? item.description : ''}</span></td>
-								<td><span className="temp">{item ? item.temperature : ''}°C</span></td>
-							</tr>
-						)
-					})}
-				</tbody>
-			</table>
+			<ul className="forecast">
+				{list.map((item, i) => {
+					return(
+						<li key={i}>
+							<span className="forecast_date">
+								{item ? item.month : ''}/{item ? item.date : ''}<br />
+								{item ? item.hours : ''}:{item ? item.min : ''}
+							</span>
+							<span className="forecast_icon"><img src={item ? item.iconPath : ''} alt="天気" /></span>
+							<span className="forecast_description">{item ? item.description : ''}</span>
+							<span className="forecast_temp">{item ? item.temperature : ''}°C</span>
+						</li>
+					)
+				})}
+			</ul>
 
 			<div className={isOverflow ? 'overflow is-active' : 'overflow'}>
 				<div className="overflow_wrap" onClick={changeActiveOverflow}>
